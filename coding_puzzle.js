@@ -18,11 +18,6 @@ function findLowestCost(costs, strOne, strTwo) {
   let changeCost = costs[2];
   let anagramCost = costs[3];
   let lowestCost = Number.POSITIVE_INFINITY;
-  let cache = new Set();
-
-  if (strOne === strTwo) {
-    return 0;
-  } 
   
   function transformString(currStrOne, currStrTwo, currCost, currCache) {
     // BASE CASES
@@ -33,7 +28,7 @@ function findLowestCost(costs, strOne, strTwo) {
         return;
     }
     
-    currCache.add(currStrOne);
+    currCache[currStrOne] = currStrOne;
     let newStrOne;
 
     // TRANSFORMATION OPERATIONS
@@ -70,7 +65,7 @@ function findLowestCost(costs, strOne, strTwo) {
               for (let letter of ALPHABET) {
                 newStrOne = currStrOne.substr(0, i) + letter + currStrOne.substr(i + 1);
 
-                if (isValidWord(newStrOne) && newStrOne !== currStrOne && !currCache.has(newStrOne)) { 
+                if (isValidWord(newStrOne) && newStrOne !== currStrOne && !currCache.hasOwnProperty(newStrOne)) { 
                   transformString(newStrOne, currStrTwo, currCost + changeCost, currCache);            
                 }
               }
@@ -80,7 +75,7 @@ function findLowestCost(costs, strOne, strTwo) {
     }
   }
 
-  transformString(strOne, strTwo, 0, cache);
+  transformString(strOne, strTwo, 0, {});
 
   return lowestCost === Number.POSITIVE_INFINITY ? -1 : lowestCost;
 }
